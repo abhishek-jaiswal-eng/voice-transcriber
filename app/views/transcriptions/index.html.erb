@@ -1,19 +1,103 @@
-<h1>Voice Transcription</h1>
+<h1 class="page-title">Voice Transcription</h1>
 
-<div data-controller="transcription">
-  <button data-action="click->transcription#start" id="start-btn">Start Recording</button>
-  <button data-action="click->transcription#stop" id="stop-btn">Stop Recording</button>
+<div data-controller="transcription" class="controls">
+  <button data-action="click->transcription#start" id="start-btn" class="btn btn-start">Start Recording</button>
+  <button data-action="click->transcription#stop" id="stop-btn" class="btn btn-stop">Stop Recording</button>
 </div>
 
-
 <% if @transcriptions.any? %>
-  <ul>
+  <ul class="transcription-list">
     <% @transcriptions.each do |t| %>
-      <li>
-        <%= link_to "Audio ##{t.id} - Uploaded at #{t.created_at.strftime("%d %b %Y %H:%M")}", summary_path(t) %>
+      <li class="transcription-item">
+        <%= link_to "Audio ##{t.id} - Uploaded at #{t.created_at.strftime("%d %b %Y %H:%M")}", summary_path(t), class: "transcription-link" %>
       </li>
     <% end %>
   </ul>
 <% else %>
-  <p>No recordings yet.</p>
+  <p class="no-recordings">No recordings yet.</p>
 <% end %>
+
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f8fa;
+    color: #333;
+    padding: 20px;
+  }
+
+  .page-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    text-shadow: 1px 1px #fff;
+  }
+
+  .controls {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .btn {
+    font-size: 1rem;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    color: #fff;
+  }
+
+  .btn-start {
+    background-color: #27ae60;
+  }
+
+  .btn-start:hover {
+    background-color: #2ecc71;
+  }
+
+  .btn-stop {
+    background-color: #c0392b;
+  }
+
+  .btn-stop:hover {
+    background-color: #e74c3c;
+  }
+
+  .transcription-list {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+
+  .transcription-item {
+    background-color: #fff;
+    margin-bottom: 10px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+
+  .transcription-item:hover {
+    transform: translateY(-2px);
+  }
+
+  .transcription-link {
+    text-decoration: none;
+    color: #2980b9;
+    font-weight: 500;
+  }
+
+  .transcription-link:hover {
+    text-decoration: underline;
+  }
+
+  .no-recordings {
+    text-align: center;
+    font-style: italic;
+    color: #7f8c8d;
+  }
+</style>
