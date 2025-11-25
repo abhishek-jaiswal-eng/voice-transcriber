@@ -1,0 +1,17 @@
+<h1>Audio <%= @transcription.id %></h1>
+<p>Uploaded at: <%= @transcription.created_at.strftime("%d %b %Y %H:%M") %></p>
+
+<% if @transcription.audio_file.attached? %>
+  <audio controls>
+    <source src="<%= url_for(@transcription.audio_file) %>" type="<%= @transcription.audio_file.content_type %>">
+    Your browser does not support the audio element.
+  </audio>
+<% else %>
+  <p>No audio uploaded.</p>
+<% end %>
+
+<h2>Transcription</h2>
+<p><%= @transcription.transcription || "Not transcribed yet" %></p>
+
+<h2>Summary</h2>
+<p><%= @transcription.summary || "Summary not generated yet" %></p>

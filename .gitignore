@@ -1,0 +1,20 @@
+# Rails specific
+/log/*
+/tmp/*
+/node_modules
+/public/assets
+/public/packs
+.byebug_history
+
+# OS & Editor
+.DS_Store
+*.swp
+*.swo
+*.idea
+*.vscode
+
+# Gems installed locally
+/vendor/bundle
+
+# Credentials (optional if using master.key separately)
+/config/master.key
