@@ -1,0 +1,66 @@
+name: Rails CI
+
+on:
+  pull_request:
+    branches:
+      - "release/**"
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "**/*.rb"
+      - "app/**"
+      - "config/**"
+      - "db/**"
+      - "lib/**"
+      - "Gemfile"
+      - "app/javascript/**"
+      - "config/importmap.rb"
+      - "config/routes.rb"
+
+jobs:
+  lint:
+    name: Rails Lint & Static Analysis
+    runs-on: ubuntu-latest
+
+    env:
+      RAILS_ENV: development
+      BUNDLE_WITHOUT: production
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Install JavaScript Dependencies
+        if: hashFiles('package.json') != ''
+        run: yarn install --frozen-lockfile
+
+      - name: Verify Ruby Syntax
+        run: |
+          find app config db lib -name "*.rb" -print0 \
+          | xargs -0 -n1 ruby -wc
+
+      - name: Verify Zeitwerk Autoloading
+        run: bundle exec rails zeitwerk:check
+
+      - name: Run RuboCop
+        run: bundle exec rubocop
+
+      - name: Run Brakeman Security Scan
+        run: bundle exec brakeman -q
+
+      - name: Precompile Assets
+        run: bundle exec rails assets:precompile
