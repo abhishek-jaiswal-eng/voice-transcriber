@@ -47,3 +47,4 @@ jobs:
 
       - name: Precompile Assets
         run: bundle exec rails assets:precompile
+        
