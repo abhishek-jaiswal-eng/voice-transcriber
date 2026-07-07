@@ -8,20 +8,10 @@ on:
       - opened
       - synchronize
       - reopened
-    paths:
-      - "**/*.rb"
-      - "app/**"
-      - "config/**"
-      - "db/**"
-      - "lib/**"
-      - "Gemfile"
-      - "app/javascript/**"
-      - "config/importmap.rb"
-      - "config/routes.rb"
 
 jobs:
   lint:
-    name: Rails Lint & Static Analysis
+    name: Ruby on Rails Static Analysis
     runs-on: ubuntu-latest
 
     env:
@@ -38,28 +28,21 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: yarn
+      - name: Install Gems
+        run: bundle install --jobs 4 --retry 3
 
-      - name: Install JavaScript Dependencies
-        if: hashFiles('package.json') != ''
-        run: yarn install --frozen-lockfile
-
-      - name: Verify Ruby Syntax
+      - name: Check Ruby Syntax
         run: |
-          find app config db lib -name "*.rb" -print0 \
-          | xargs -0 -n1 ruby -wc
+          find app config db lib -name "*.rb" -print0 | \
+          xargs -0 -n1 ruby -wc
 
-      - name: Verify Zeitwerk Autoloading
+      - name: Check Rails Autoloading (Zeitwerk)
         run: bundle exec rails zeitwerk:check
 
       - name: Run RuboCop
         run: bundle exec rubocop
 
-      - name: Run Brakeman Security Scan
+      - name: Run Brakeman
         run: bundle exec brakeman -q
 
       - name: Precompile Assets
